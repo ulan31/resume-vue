@@ -8,13 +8,14 @@
     <div class="card card-w70">
       <template v-if="isDataBlock">
         <component
-          v-for="(value, index) in dataBlocks"
-          :key="index"
+          v-for="value in dataBlocks"
+          :key="value.id"
           :is="'app-' + value.type"
           :="value"
+          @remove="removeItem"
         ></component>
       </template>
-      <h3 v-else>Добавьте первый блок, чтобы увидеть результат</h3>
+      <h3 v-else-if="!loading">Добавьте первый блок, чтобы увидеть результат</h3>
     </div>
   </div>
   <div class="container">
@@ -33,7 +34,6 @@
       :key="comment.id"
       :comment-item="comment"
     ></app-comment-list>
-
   </div>
 </template>
 
@@ -131,7 +131,10 @@ export default {
       try {
         const { data } = await axios.post('https://rezume-vue-default-rtdb.europe-west1.firebasedatabase.app/rezume.json', newData)
         if (data) {
-          this.dataBlocks.push(newData)
+          this.dataBlocks.push({
+            id: data,
+            ...newData
+          })
         }
         this.loading = false
       } catch (e) {
@@ -150,6 +153,7 @@ export default {
         if (data) {
           this.dataBlocks = Object.keys(data).map(keys => {
             return {
+              id: keys,
               ...data[keys]
             }
           })
@@ -159,6 +163,27 @@ export default {
         this.alert = {
           type: 'danger',
           title: 'Error',
+          text: e.message
+        }
+        this.loading = false
+      }
+    },
+    async removeItem (id) {
+      this.loading = true
+      try {
+        const name = this.dataBlocks.find(item => item.id === id).type
+        await axios.delete(`https://rezume-vue-default-rtdb.europe-west1.firebasedatabase.app/rezume/${id}.json`)
+        this.dataBlocks = this.dataBlocks.filter(item => item.id !== id)
+        this.alert = {
+          type: 'danger',
+          title: 'Delete!',
+          text: `Delete block "${name}"`
+        }
+        this.loading = false
+      } catch (e) {
+        this.alert = {
+          type: 'danger',
+          title: 'Something wrong',
           text: e.message
         }
         this.loading = false
