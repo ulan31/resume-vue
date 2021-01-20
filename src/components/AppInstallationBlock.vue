@@ -31,13 +31,16 @@ export default {
   },
   data () {
     return {
-      selectValue: '0',
+      selectValue: 'title',
       textAreaValue: ''
     }
   },
   computed: {
     isDisabled () {
       return this.textAreaValue.length <= 3
+    },
+    isSubmitForm () {
+      return this.selectValue && this.textAreaValue
     }
   },
   methods: {

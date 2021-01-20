@@ -5,9 +5,9 @@
       <option
         v-for="(item, index) in typeBlocks"
         :key="index"
-        :value="index"
+        :value="item.value"
       >
-        {{ item }}
+        {{ item.title }}
       </option>
     </select>
   </div>
