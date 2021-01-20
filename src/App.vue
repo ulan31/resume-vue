@@ -1,26 +1,7 @@
 <template>
   <appAlert :alert-data="alert" @close-alert="alert = null"/>
   <div class="container column">
-
-    <form class="card card-w30">
-      <div class="form-control">
-        <label for="type">Тип блока</label>
-        <select id="type">
-          <option value="title">Заголовок</option>
-          <option value="subtitle">Подзаголовок</option>
-          <option value="avatar">Аватар</option>
-          <option value="text">Текст</option>
-        </select>
-      </div>
-
-      <div class="form-control">
-        <label for="value">Значение</label>
-        <textarea id="value" rows="3"></textarea>
-      </div>
-
-      <button class="btn primary">Добавить</button>
-    </form>
-
+    <app-installation-block></app-installation-block>
     <div class="card card-w70">
       <h1>Резюме Nickname</h1>
       <div class="avatar">
@@ -58,19 +39,26 @@ import AppBtn from './components/AppBtn'
 import AppCommentList from './components/AppCommentList'
 import AppLoader from './components/AppLoader'
 import AppAlert from './components/AppAlert'
+import AppInstallationBlock from './components/AppInstallationBlock'
 
 export default {
   components: {
     AppBtn,
     AppCommentList,
     AppLoader,
-    AppAlert
+    AppAlert,
+    AppInstallationBlock
   },
   data () {
     return {
       loading: false,
       commentList: [],
       alert: null
+    }
+  },
+  provide () {
+    return {
+      typeBlocks: ['Заголовок', 'Подзаголовок', 'Аватар', 'Текст']
     }
   },
   methods: {
