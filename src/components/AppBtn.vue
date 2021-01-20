@@ -1,5 +1,10 @@
 <template>
-  <button class="btn" :class="type" @click="$emit('action')">
+  <button
+    class="btn"
+    :class="type"
+    :disabled="isDisabled"
+    @click="$emit('action')"
+  >
     <slot></slot>
   </button>
 </template>
@@ -13,6 +18,11 @@ export default {
       validator (value) {
         return ['', 'primary', 'danger'].includes(value)
       }
+    },
+    isDisabled: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   emits: ['action']

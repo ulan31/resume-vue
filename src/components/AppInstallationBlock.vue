@@ -10,6 +10,7 @@
     </app-text-area-block>
     <app-btn
       :type="'primary'"
+      :is-disabled="isDisabled"
     >
       Добавить
     </app-btn>
@@ -32,6 +33,11 @@ export default {
     return {
       selectValue: '0',
       textAreaValue: ''
+    }
+  },
+  computed: {
+    isDisabled () {
+      return this.textAreaValue.length <= 3
     }
   },
   methods: {
