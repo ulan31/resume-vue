@@ -1,10 +1,10 @@
 <template>
-  <h2>Опыт работы</h2>
+  <h1>{{ $attrs.value }}</h1>
 </template>
 
 <script>
 export default {
-  name: 'AppSubheading'
+  name: 'AppTitle'
 }
 </script>
 

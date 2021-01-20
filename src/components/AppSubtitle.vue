@@ -1,10 +1,10 @@
 <template>
-  <h1>Резюме Nickname</h1>
+  <h2>{{ $attrs.value }}</h2>
 </template>
 
 <script>
 export default {
-  name: 'AppHeading'
+  name: 'AppSubtitle'
 }
 </script>
 

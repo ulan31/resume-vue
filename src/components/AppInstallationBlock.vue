@@ -5,7 +5,7 @@
     >
     </app-select-block>
     <app-text-area-block
-      v-model:text="textAreaValue"
+      v-model:text.trim="textAreaValue"
     >
     </app-text-area-block>
     <app-btn
@@ -29,6 +29,14 @@ export default {
     AppTextAreaBlock,
     AppBtn
   },
+  emits: {
+    submitForm (value) {
+      if (value) {
+        return true
+      }
+      return false
+    }
+  },
   data () {
     return {
       selectValue: 'title',
@@ -45,7 +53,15 @@ export default {
   },
   methods: {
     submitForm () {
-      console.log('here')
+      if (this.isSubmitForm) {
+        const data = {
+          type: this.selectValue,
+          value: this.textAreaValue
+        }
+        this.$emit('submitForm', data)
+        this.selectValue = 'title'
+        this.textAreaValue = ''
+      }
     }
   }
 }

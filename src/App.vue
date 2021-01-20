@@ -1,13 +1,20 @@
 <template>
   <appAlert :alert-data="alert" @close-alert="alert = null"/>
   <div class="container column">
-    <app-installation-block></app-installation-block>
+    <app-installation-block
+      @submitForm="createData"
+    >
+    </app-installation-block>
     <div class="card card-w70">
-      <app-heading></app-heading>
-      <app-avatar></app-avatar>
-      <app-subheading></app-subheading>
-      <app-text></app-text>
-      <h3>Добавьте первый блок, чтобы увидеть результат</h3>
+      <template v-if="isDataBlock">
+        <component
+          v-for="(value, index) in dataBlocks"
+          :key="index"
+          :is="'app-' + value.type"
+          :="value"
+        ></component>
+      </template>
+      <h3 v-else>Добавьте первый блок, чтобы увидеть результат</h3>
     </div>
   </div>
   <div class="container">
@@ -31,14 +38,15 @@
 </template>
 
 <script>
+import axios from 'axios'
 import AppBtn from './components/AppBtn'
 import AppCommentList from './components/AppCommentList'
 import AppLoader from './components/AppLoader'
 import AppAlert from './components/AppAlert'
 import AppInstallationBlock from './components/AppInstallationBlock'
-import AppHeading from './components/AppHeading'
+import AppTitle from './components/AppTitle'
+import AppSubtitle from './components/AppSubtitle'
 import AppAvatar from './components/AppAvatar'
-import AppSubheading from './components/AppSubheading'
 import AppText from './components/AppText'
 
 export default {
@@ -48,16 +56,25 @@ export default {
     AppLoader,
     AppAlert,
     AppInstallationBlock,
-    AppHeading,
+    AppTitle,
+    AppSubtitle,
     AppAvatar,
-    AppSubheading,
     AppText
   },
   data () {
     return {
       loading: false,
       commentList: [],
+      dataBlocks: [],
       alert: null
+    }
+  },
+  computed: {
+    isDataBlock () {
+      if (this.dataBlocks.length !== 0) {
+        return true
+      }
+      return false
     }
   },
   provide () {
@@ -82,6 +99,9 @@ export default {
       ]
     }
   },
+  mounted () {
+    this.getData()
+  },
   methods: {
     async loadingComment () {
       this.loading = true
@@ -96,6 +116,44 @@ export default {
           throw new Error('not comments')
         }
         this.commentList = await response.json()
+        this.loading = false
+      } catch (e) {
+        this.alert = {
+          type: 'danger',
+          title: 'Error',
+          text: e.message
+        }
+        this.loading = false
+      }
+    },
+    async createData (newData) {
+      this.loading = true
+      try {
+        const { data } = await axios.post('https://rezume-vue-default-rtdb.europe-west1.firebasedatabase.app/rezume.json', newData)
+        if (data) {
+          this.dataBlocks.push(newData)
+        }
+        this.loading = false
+      } catch (e) {
+        this.alert = {
+          type: 'danger',
+          title: 'Error',
+          text: e.message
+        }
+        this.loading = false
+      }
+    },
+    async getData () {
+      this.loading = true
+      try {
+        const { data } = await axios.get('https://rezume-vue-default-rtdb.europe-west1.firebasedatabase.app/rezume.json')
+        if (data) {
+          this.dataBlocks = Object.keys(data).map(keys => {
+            return {
+              ...data[keys]
+            }
+          })
+        }
         this.loading = false
       } catch (e) {
         this.alert = {

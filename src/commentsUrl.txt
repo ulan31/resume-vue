@@ -1,1 +1,6 @@
 https://jsonplaceholder.typicode.com/comments?_limit=42
+
+<app-heading></app-heading>
+      <app-avatar></app-avatar>
+      <app-subheading></app-subheading>
+      <app-text></app-text>
